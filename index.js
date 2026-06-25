@@ -1,7 +1,18 @@
-// Add these lines to the very top of index.js
-console.log("--- BOT STARTUP INITIALIZED ---");
-console.log("Environment check: API_KEY is", process.env.API_KEY ? "Present" : "MISSING");
-
+// --- STARTUP DEBUG ---
+(async () => {
+    try {
+        console.log("--- BOT STARTUP INITIALIZED ---");
+        console.log("Environment check: API_KEY is", process.env.API_KEY ? "Present" : "MISSING");
+        console.log("Attempting to connect to exchange...");
+        
+        await exchange.loadMarkets(); 
+        
+        console.log("Connection successful!");
+    } catch (error) {
+        console.error("CRITICAL STARTUP ERROR:", error.message);
+    }
+})();
+// --- END DEBUG ---
 // ... your existing code follows ...
 // exchange.js
 import 'dotenv/config';
