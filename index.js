@@ -2,14 +2,20 @@
 (async () => {
     try {
         console.log("--- BOT STARTUP INITIALIZED ---");
-        console.log("Environment check: API_KEY is", process.env.API_KEY ? "Present" : "MISSING");
+        
+        // Timeout helper
+        const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error("Connection timed out")), ms));
+        
         console.log("Attempting to connect to exchange...");
         
-        await exchange.loadMarkets(); 
+        // Race the connection against a 10-second timer
+        await Promise.race([exchange.loadMarkets(), timeout(10000)]);
         
         console.log("Connection successful!");
     } catch (error) {
         console.error("CRITICAL STARTUP ERROR:", error.message);
+        // Important: If it fails, we want the process to exit so Railway knows it failed
+        process.exit(1); 
     }
 })();
 // --- END DEBUG ---
