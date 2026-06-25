@@ -3,18 +3,29 @@
     try {
         console.log("--- BOT STARTUP INITIALIZED ---");
         
-        // Timeout helper
-        const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error("Connection timed out")), ms));
+        // Debugging environment variables
+        console.log("Checking environment variables...");
+        const apiKey = process.env.API_KEY;
+        const apiSecret = process.env.API_SECRET;
+        
+        console.log("API_KEY exists:", !!apiKey);
+        console.log("API_SECRET exists:", !!apiSecret);
+        
+        if (!apiKey || !apiSecret) {
+            throw new Error("Missing API_KEY or API_SECRET in environment variables!");
+        }
+
+        const exchange = new ccxt.binance({
+            apiKey: apiKey,
+            secret: apiSecret,
+        });
         
         console.log("Attempting to connect to exchange...");
-        
-        // Race the connection against a 10-second timer
-        await Promise.race([exchange.loadMarkets(), timeout(10000)]);
-        
+        await exchange.loadMarkets(); 
         console.log("Connection successful!");
+        
     } catch (error) {
         console.error("CRITICAL STARTUP ERROR:", error.message);
-        // Important: If it fails, we want the process to exit so Railway knows it failed
         process.exit(1); 
     }
 })();
