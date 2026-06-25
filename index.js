@@ -1,3 +1,8 @@
+// Add these lines to the very top of index.js
+console.log("--- BOT STARTUP INITIALIZED ---");
+console.log("Environment check: API_KEY is", process.env.API_KEY ? "Present" : "MISSING");
+
+// ... your existing code follows ...
 // exchange.js
 import 'dotenv/config';
 import ccxt from 'ccxt';
